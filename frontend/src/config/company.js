@@ -9,7 +9,7 @@ export const COMPANY = {
     phone: '(514) 815-9090',
     // E.164 form of `phone`, for tel: links.
     phoneTel: '+15148159090',
-    email: 'À COMPLÉTER',
+    email: 'brossardtaxi@gmail.com',
     website: 'www.taxibrossard.com',
     gstNumber: 'À COMPLÉTER',
     qstNumber: 'À COMPLÉTER',
