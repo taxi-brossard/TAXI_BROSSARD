@@ -3,9 +3,9 @@
 // links on the public pages.
 // TODO: replace every 'À COMPLÉTER' value with Taxi Brossard's real details.
 export const COMPANY = {
-    name: 'Taxi Brossard',
-    address: 'À COMPLÉTER',
-    cityLine: 'Brossard, QC',
+    name: 'Taxi Brossard Inc.',
+    address: '3720 Rue Beaumont',
+    cityLine: 'Brossard, QC J4Z 2N7',
     phone: '(514) 815-9090',
     // E.164 form of `phone`, for tel: links.
     phoneTel: '+15148159090',
