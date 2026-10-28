@@ -32,7 +32,7 @@ jobs:
         env:
           # Permanent backend on Render (see render.yaml) — no longer a local
           # machine + Cloudflare tunnel, so this URL is stable across restarts.
-          VITE_API_URL: https://taxibrossard.onrender.com/api
+          VITE_API_URL: https://taxi-brossard.onrender.com/api
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
