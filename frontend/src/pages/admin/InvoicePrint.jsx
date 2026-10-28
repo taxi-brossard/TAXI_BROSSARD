@@ -216,8 +216,8 @@ export default function InvoicePrint() {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: 20, gap: 20 }}>
                     <div className="subtle" style={{ fontSize: 13 }}>
-                        <div>{t('admin.invoicePrint.gstAccount')}: {COMPANY.gstNumber}</div>
-                        <div>{t('admin.invoicePrint.qstAccount')}: {COMPANY.qstNumber}</div>
+                        {COMPANY.gstNumber && <div>{t('admin.invoicePrint.gstAccount')}: {COMPANY.gstNumber}</div>}
+                        {COMPANY.qstNumber && <div>{t('admin.invoicePrint.qstAccount')}: {COMPANY.qstNumber}</div>}
                     </div>
                     <div style={{ minWidth: 220 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>

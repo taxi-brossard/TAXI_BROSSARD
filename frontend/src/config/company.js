@@ -1,7 +1,6 @@
 // Taxi Brossard's own contact details + tax registration numbers — the one
 // place to edit them. Used by the invoice letterhead and the "call us"
 // links on the public pages.
-// TODO: replace every 'À COMPLÉTER' value with Taxi Brossard's real details.
 export const COMPANY = {
     name: 'Taxi Brossard Inc.',
     address: '3720 Rue Beaumont',
@@ -11,7 +10,7 @@ export const COMPANY = {
     phoneTel: '+15148159090',
     email: 'brossardtaxi@gmail.com',
     website: 'www.taxibrossard.com',
-    gstNumber: 'À COMPLÉTER',
-    qstNumber: 'À COMPLÉTER',
+    gstNumber: '', // e.g. '12345 6789 RT0001' — hidden on invoices while empty
+    qstNumber: '', // e.g. '1234567890 TQ0001' — hidden on invoices while empty
     footerPhone: '514-815-9090',
 };
