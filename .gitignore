@@ -30,3 +30,7 @@ skills-lock.json
 
 # Local dev on/off toggle script state
 .dev-pids.json
+
+# Local copies of production settings (never commit)
+render-settings.txt
+github-cron-secret.txt
