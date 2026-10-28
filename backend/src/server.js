@@ -1,0 +1,60 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+// Express 4 doesn't forward a rejected promise from an async route handler to
+// the error middleware below — it becomes an unhandled rejection that crashes
+// the whole process (Node 15+ default), taking down every other request until
+// Render restarts the service. This patches route/router handlers so async
+// errors reach app.use(err, ...) like a synchronous throw would.
+import 'express-async-errors';
+
+import authRoutes from './routes/auth.js';
+import driverRoutes from './routes/drivers.js';
+import clientAccountRoutes from './routes/clientAccounts.js';
+import tripRoutes from './routes/trips.js';
+import invoiceRoutes from './routes/invoices.js';
+import dispatchRoutes from './routes/dispatch.js';
+import reservationRoutes from './routes/reservations.js';
+import trashRoutes from './routes/trash.js';
+import exportRoutes from './routes/export.js';
+import pushRoutes from './routes/push.js';
+import quickMessageRoutes from './routes/quickMessages.js';
+import smsGateWebhookRoutes from './routes/smsGateWebhook.js';
+import { ensureWebhookRegistered } from './services/smsGateWebhook.js';
+
+dotenv.config();
+
+const app = express();
+
+app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
+// verify captures the raw request body alongside the parsed one — the SMS
+// Gate webhook route needs the exact original bytes to check its HMAC
+// signature, which the parsed/re-serialized JSON object can't guarantee.
+app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
+
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/drivers', driverRoutes);
+app.use('/api/client-accounts', clientAccountRoutes);
+app.use('/api/trips', tripRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/dispatch', dispatchRoutes);
+app.use('/api/reservations', reservationRoutes);
+app.use('/api/trash', trashRoutes);
+app.use('/api/export', exportRoutes);
+app.use('/api/push', pushRoutes);
+app.use('/api/quick-messages', quickMessageRoutes);
+app.use('/api/sms-gate', smsGateWebhookRoutes);
+
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+});
+
+const port = process.env.PORT || 4100;
+app.listen(port, () => {
+    console.log(`TAXI BROSSARD API listening on port ${port}`);
+    ensureWebhookRegistered();
+});

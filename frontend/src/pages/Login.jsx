@@ -1,0 +1,125 @@
+import { useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { api } from '../api/client.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useTheme } from '../hooks/useTheme.js';
+import { useLanguage } from '../i18n/LanguageContext.jsx';
+
+export default function Login() {
+    const [searchParams] = useSearchParams();
+    const [theme, toggleTheme] = useTheme('taxibrossard-home-theme', 'light');
+    const { t, lang, toggleLang } = useLanguage();
+    const [mode, setMode] = useState(searchParams.get('mode') === 'driver' ? 'driver' : 'admin');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [accessCode, setAccessCode] = useState('');
+    const [error, setError] = useState('');
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setError('');
+        try {
+            if (mode === 'admin') {
+                const { token, user } = await api.adminLogin(email, password);
+                login(token, user);
+                navigate('/admin');
+            } else {
+                const { token, user } = await api.driverLogin(accessCode);
+                login(token, user);
+                navigate('/driver');
+            }
+        } catch (err) {
+            setError(err.message);
+        }
+    }
+
+    return (
+        <div className={`theme-${theme}`} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 20, right: 20, display: 'flex', gap: 8 }}>
+                <button
+                    onClick={toggleTheme}
+                    className="btn btn--ghost"
+                    style={{ padding: '8px 14px', fontSize: 12 }}
+                >
+                    {theme === 'dark' ? t('common.lightMode') : t('common.darkMode')}
+                </button>
+                <button
+                    onClick={toggleLang}
+                    className="btn btn--ghost"
+                    style={{ padding: '8px 14px', fontSize: 12 }}
+                >
+                    {lang === 'en' ? 'FR' : 'EN'}
+                </button>
+            </div>
+            <div style={{ width: '100%', maxWidth: 380 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36, justifyContent: 'center' }}>
+                    <div className="rail__mark" style={{ width: 44, height: 44, fontSize: 20 }}>TB</div>
+                    <div>
+                        <div className="h1" style={{ fontSize: 24 }}>TAXI BROSSARD</div>
+                        <div className="subtle" style={{ marginTop: -2 }}>{t('login.tagline')}</div>
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="tabbar" style={{ width: '100%', marginBottom: 20 }}>
+                        <button
+                            type="button"
+                            className={`tabbar__btn ${mode === 'admin' ? 'tabbar__btn--active' : ''}`}
+                            style={{ flex: 1 }}
+                            onClick={() => setMode('admin')}
+                        >
+                            {t('login.tabAdmin')}
+                        </button>
+                        <button
+                            type="button"
+                            className={`tabbar__btn ${mode === 'driver' ? 'tabbar__btn--active' : ''}`}
+                            style={{ flex: 1 }}
+                            onClick={() => setMode('driver')}
+                        >
+                            {t('login.tabDriver')}
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                        {mode === 'admin' ? (
+                            <>
+                                <div className="field">
+                                    <label htmlFor="email">{t('login.emailLabel')}</label>
+                                    <input id="email" name="email" className="input" type="email" autoComplete="username" placeholder="you@taxibrossard.local" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                </div>
+                                <div className="field">
+                                    <label htmlFor="password">{t('login.passwordLabel')}</label>
+                                    <input id="password" name="password" className="input" type="password" autoComplete="current-password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="field">
+                                <label htmlFor="accessCode">{t('login.accessCodeLabel')}</label>
+                                <input
+                                    id="accessCode"
+                                    className="input"
+                                    style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.05em' }}
+                                    placeholder="DRV-1001"
+                                    value={accessCode}
+                                    onChange={(e) => setAccessCode(e.target.value)}
+                                    autoCapitalize="characters"
+                                    autoCorrect="off"
+                                    autoComplete="off"
+                                    spellCheck="false"
+                                    required
+                                />
+                            </div>
+                        )}
+                        {error && <div className="pill pill--cancelled" style={{ color: 'var(--danger)', background: 'rgba(240,85,76,0.12)' }}>{error}</div>}
+                        <button type="submit" className="btn btn--primary" style={{ marginTop: 6 }}>{t('login.logIn')}</button>
+                    </form>
+                </div>
+                <div style={{ textAlign: 'center', marginTop: 16 }}>
+                    <Link to="/" className="subtle" style={{ textDecoration: 'none' }}>{t('login.backToHome')}</Link>
+                </div>
+            </div>
+        </div>
+    );
+}

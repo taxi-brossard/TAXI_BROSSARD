@@ -1,0 +1,12 @@
+{
+    "name": "TAXI BROSSARD Fleet Management",
+    "short_name": "Taxi Brossard",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#14171B",
+    "theme_color": "#14171B",
+    "icons": [
+        { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    ]
+}
